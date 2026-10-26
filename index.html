@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tomosha</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f4f1fb;--sf:#fff;--ink:#241a3d;--mute:#6d6490;--line:#ddd6f0;--ac:#e8386d;--aci:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1530;--sf:#271f45;--ink:#f1edff;--mute:#a79fcb;--line:#3b3263;--ac:#ff6b95;--aci:#1b1530;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1530;--sf:#271f45;--ink:#f1edff;--mute:#a79fcb;--line:#3b3263;--ac:#ff6b95;--aci:#1b1530;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Manrope,system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:16px 20px 8px;max-width:1100px;margin:auto}
+h1{font:800 24px/1 Unbounded,Manrope,sans-serif;margin:0}h1 span{color:var(--ac)}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+input,select,textarea,button{font:inherit;color:inherit}
+input,textarea{background:var(--sf);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+button{cursor:pointer;border:1px solid var(--line);background:var(--sf);border-radius:10px;padding:8px 13px;font-weight:600}
+button.p,button[aria-current=true],button[aria-pressed=true]{background:var(--ac);color:var(--aci);border-color:var(--ac)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+main{max-width:1100px;margin:auto;padding:8px 20px 60px;display:grid;gap:18px}
+h2{font:800 18px/1.2 Unbounded,Manrope,sans-serif;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.chips button{white-space:nowrap;border-radius:999px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.card{background:none;border:0;padding:0;text-align:left}
+.poster{aspect-ratio:2/3;border-radius:12px;display:flex;align-items:flex-end;padding:10px;position:relative;overflow:hidden;color:#fff}
+.poster b{font:800 54px/1 Unbounded,sans-serif;position:absolute;top:10px;right:12px;opacity:.35}
+.poster small{background:rgba(0,0,0,.5);padding:2px 8px;border-radius:6px;font-weight:700}
+.card h3{font-size:15px;margin:8px 0 0;line-height:1.3}.card p{margin:0;color:var(--mute);font-size:13px}
+.hero{border-radius:16px;padding:28px 22px;color:#fff;display:grid;gap:10px;min-height:200px;align-content:end}
+.hero h2{font-size:26px}.hero p{margin:0;max-width:52ch}
+.empty{color:var(--mute);padding:30px 0;text-align:center}
+.box{background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px}
+.av{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:36px;background:var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}.stats b{font:800 22px Unbounded,sans-serif;display:block}.stats span{color:var(--mute);font-size:13px}
+dialog{border:0;border-radius:16px;padding:0;width:min(720px,94vw);max-height:92vh;background:var(--sf);color:var(--ink)}
+dialog::backdrop{background:rgba(20,10,40,.6)}.dlg{padding:20px;display:grid;gap:14px}
+.player{aspect-ratio:16/9;border-radius:12px;background:#000;color:#cfc8ea;display:grid;place-items:center;text-align:center;padding:12px;overflow:hidden}.player video{width:100%;height:100%}
+label{font-weight:600;font-size:14px;display:grid;gap:4px}
+.cm{border-top:1px solid var(--line);padding-top:8px}.cm small{color:var(--mute)}
+.star{border:0;background:none;font-size:24px;padding:2px 4px;color:var(--mute)}.star.on{color:var(--ac)}
+footer{max-width:1100px;margin:auto;padding:0 20px 30px;color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+<header><h1>Tomosha<span>.</span></h1><nav id="nav" aria-label="Menu"></nav></header>
+<main id="page"></main>
+<footer id="foot"></footer>
+<dialog id="view"><div class="dlg" id="vb"></div></dialog>
+<dialog id="add"><form class="dlg" id="af" method="dialog"></form></dialog>
+<script type="application/json" id="cat">[]</script>
+<script>
+var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
+var T={
+uz:{home:"Bosh sahifa",catalog:"Katalog",fav:"Sevimlilar",profile:"Profil",search:"Anime qidirish",all:"Barchasi",add:"Anime qoʻshish",cont:"Davom ettirish",news:"Yangi qoʻshilganlar",eps:"qism",close:"Yopish",favAdd:"Sevimlilarga qoʻshish ♥",favDel:"Sevimlilardan olib tashlash",del:"Oʻchirish",noVideo:"Bu qism uchun video ulanmagan. “Anime qoʻshish” orqali oʻz videongiz havolasini kiriting.",none:"Hech narsa topilmadi.",favEmpty:"Hali sevimli anime yoʻq.",sort:"Saralash",sNew:"Yangi",sName:"Nomi",sRate:"Reyting",rate:"Baholang",cm:"Izohlar",cPh:"Izoh yozing",send:"Yuborish",noC:"Hozircha izoh yoʻq.",name:"Anime nomi",save:"Saqlash",lang:"Til",theme:"Mavzu",light:"Yorugʻ",dark:"Qorongʻi",auto:"Avto",stats:"Statistika",watched:"Koʻrilgan qismlar",mins:"Daqiqa",hist:"Koʻrish tarixi",histEmpty:"Tarix boʻsh.",reset:"Barcha ma’lumotni tozalash",confirm:"Hamma narsa oʻchadi. Davom etasizmi?",guest:"Mehmon",avatar:"Avatar",year:"Yili",genres:"Janrlar (vergul bilan)",video:"Toʻgʻridan-toʻgʻri video URL (MP4/WebM; tarqatish huquqi sizda boʻlsin)",desc:"Tavsif",cancel:"Bekor qilish",dub:"Oʻzbekcha ovoz",hero:"Bugungi tavsiya",watch:"Koʻrish",legal:"Faqat tarqatish huquqiga ega boʻlgan videolarni joylang.",saved:"Saqlandi",up:"Video yuklash",lnk:"Video havolasi",big:"Fayl 20 MB dan katta. Havola orqali ulang.",soon:"Bu qism tez orada qoʻyiladi."},
+ru:{home:"Главная",catalog:"Каталог",fav:"Избранное",profile:"Профиль",search:"Поиск аниме",all:"Все",add:"Добавить аниме",cont:"Продолжить",news:"Новинки",eps:"серий",close:"Закрыть",favAdd:"В избранное ♥",favDel:"Убрать из избранного",del:"Удалить",noVideo:"Видео для этой серии не подключено. Добавьте ссылку на своё видео через «Добавить аниме».",none:"Ничего не найдено.",favEmpty:"В избранном пока пусто.",sort:"Сортировка",sNew:"Новые",sName:"Название",sRate:"Рейтинг",rate:"Оцените",cm:"Комментарии",cPh:"Напишите комментарий",send:"Отправить",noC:"Комментариев пока нет.",name:"Название аниме",save:"Сохранить",lang:"Язык",theme:"Тема",light:"Светлая",dark:"Тёмная",auto:"Авто",stats:"Статистика",watched:"Просмотрено серий",mins:"Минут",hist:"История просмотра",histEmpty:"История пуста.",reset:"Очистить все данные",confirm:"Всё будет удалено. Продолжить?",guest:"Гость",avatar:"Аватар",year:"Год",genres:"Жанры (через запятую)",video:"Прямая ссылка на видео MP4/WebM (только с правами на распространение)",desc:"Описание",cancel:"Отмена",dub:"Узбекская озвучка",hero:"Рекомендация дня",watch:"Смотреть",legal:"Добавляйте только видео, на распространение которых у вас есть права.",saved:"Сохранено",up:"Загрузить видео",lnk:"Ссылка на видео",big:"Файл больше 20 МБ. Подключите по ссылке.",soon:"Эта серия скоро появится."},
+en:{home:"Home",catalog:"Catalog",fav:"Favorites",profile:"Profile",search:"Search anime",all:"All",add:"Add anime",cont:"Continue watching",news:"New arrivals",eps:"eps",close:"Close",favAdd:"Add to favorites ♥",favDel:"Remove from favorites",del:"Delete",noVideo:"No video is linked for this episode. Use “Add anime” to link your own video.",none:"Nothing found.",favEmpty:"No favorites yet.",sort:"Sort",sNew:"Newest",sName:"Name",sRate:"Rating",rate:"Rate it",cm:"Comments",cPh:"Write a comment",send:"Post",noC:"No comments yet.",name:"Anime title",save:"Save",lang:"Language",theme:"Theme",light:"Light",dark:"Dark",auto:"Auto",stats:"Stats",watched:"Episodes watched",mins:"Minutes",hist:"Watch history",histEmpty:"History is empty.",reset:"Erase all data",confirm:"Everything will be erased. Continue?",guest:"Guest",avatar:"Avatar",year:"Year",genres:"Genres (comma-separated)",video:"Direct video URL (MP4/WebM; only videos you have rights to)",desc:"Description",cancel:"Cancel",dub:"Uzbek dub",hero:"Today’s pick",watch:"Watch",legal:"Only add videos you have the rights to distribute.",saved:"Saved",up:"Upload video",lnk:"Video link",big:"File is over 20 MB. Link it by URL instead.",soon:"This episode is coming soon."}};
+var G={uz:{action:"Jangari",fantasy:"Fantastika",adventure:"Sarguzasht",magic:"Sehr",drama:"Drama",slice:"Hayotiy",comedy:"Komediya",mystery:"Sirli",sport:"Sport"},
+ru:{action:"Экшен",fantasy:"Фантастика",adventure:"Приключения",magic:"Магия",drama:"Драма",slice:"Повседневность",comedy:"Комедия",mystery:"Мистика",sport:"Спорт"},
+en:{action:"Action",fantasy:"Sci-fi",adventure:"Adventure",magic:"Magic",drama:"Drama",slice:"Slice of life",comedy:"Comedy",mystery:"Mystery",sport:"Sports"}};
+var SEED=[
+{id:1,t:["Shamol yoʻlovchisi","Странник ветра","Wind Wanderer"],g:["adventure","fantasy"],y:2025,n:12,d:["Yosh xaritachi samoda suzuvchi orollar orasidan yoʻqolgan shaharni qidiradi.","Юная картограф ищет пропавший город среди парящих островов.","A young mapmaker searches for a lost city among floating islands."],c:["#ff7a59","#6a2cff"],k:"風"},
+{id:2,t:["Oy ustaxonasi","Лунная мастерская","Moon Workshop"],g:["magic","drama"],y:2024,n:24,d:["Soatsoz qiz oy nuri bilan ishlaydigan mexanizmlar orqali shahar sirini ochadi.","Часовщица раскрывает тайну города через механизмы, что работают на лунном свете.","A clockmaker girl unravels her city’s secret through moonlight machines."],c:["#3a86ff","#8338ec"],k:"月"},
+{id:3,t:["Temir bahor","Стальная весна","Iron Spring"],g:["action","fantasy"],y:2026,n:13,d:["Robot-bogʻbon va sobiq askar vayron boʻlgan dunyoda yangi bogʻ yaratadi.","Робот-садовник и бывший солдат растят сад в разрушенном мире.","A gardener robot and an ex-soldier grow a garden in a ruined world."],c:["#2ec4b6","#1b4332"],k:"鉄"},
+{id:4,t:["Chorrahadagi kafe","Кафе на перекрёстке","Crossroads Café"],g:["slice","comedy"],y:2023,n:12,d:["Kichik kafe egasi va uning gʻalati mijozlari haqida iliq hikoyalar.","Тёплые истории о хозяйке маленького кафе и её странных гостях.","Warm tales of a small café owner and her odd regulars."],c:["#ffbe0b","#fb5607"],k:"茶"},
+{id:5,t:["Qizil darvoza","Красные ворота","The Red Gate"],g:["mystery","drama"],y:2022,n:26,d:["Togʻga chiqqan yoʻlovchilar bir kechada bir xil tush koʻra boshlaydi.","Путники в горах начинают видеть один и тот же сон.","Mountain travelers begin dreaming the same dream in one night."],c:["#d00000","#370617"],k:"門"},
+{id:6,t:["Yulduz jamoasi","Звёздная команда","Star Squad"],g:["sport","comedy"],y:2025,n:12,d:["Mahalla futbol jamoasi viloyat kubogiga tayyorlanadi, lekin darvozabon doim uxlaydi.","Дворовая команда готовится к кубку области, но вратарь вечно спит.","A street team trains for the regional cup, but its goalkeeper keeps napping."],c:["#06d6a0","#118ab2"],k:"星"}];
+var AV=["🦊","🐉","🌸","⚡","🌙","🎧"];
+var S={lang:"uz",theme:"auto",name:"",av:0,favs:[],custom:[],rate:{},cmt:{},seen:{},hist:[],view:"home",genre:"all",sort:"new",q:""};
+try{var o=JSON.parse(localStorage.getItem("tm2")||"null");if(o)for(var k in o)S[k]=o[k]}catch(e){}
+var $=function(s){return document.querySelector(s)};
+function save(){try{localStorage.setItem("tm2",JSON.stringify(S))}catch(e){}}
+function L(){return ["uz","ru","en"].indexOf(S.lang)}
+function t(k){return T[S.lang][k]||k}
+function gn(x){return G[S.lang][x]||x}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var ADM=false,CAT=[];try{CAT=JSON.parse($("#cat").textContent)}catch(e){}
+function all(){return SEED.concat(CAT).concat(Array.isArray(S.custom)?S.custom:[])}
+function ti(a){return a.t[L()]||a.t[0]}
+function ds(a){return a.d[L()]||a.d[0]||""}
+function find(id){return all().filter(function(a){return a.id===id})[0]}
+function theme(){var r=document.documentElement;if(S.theme==="auto")r.removeAttribute("data-theme");else r.dataset.theme=S.theme;document.documentElement.lang=S.lang}
+function poster(a){return '<div class="poster" style="background:linear-gradient(160deg,'+a.c[0]+','+a.c[1]+')"><b>'+esc(a.k)+'</b><small>'+a.n+' '+t("eps")+' · '+t("dub")+'</small></div>'}
+function card(a){return '<button class="card" data-act="open" data-id="'+a.id+'">'+poster(a)+'<h3>'+esc(ti(a))+(S.favs.indexOf(a.id)>=0?" ♥":"")+'</h3><p>'+a.y+' · '+a.g.map(gn).map(esc).join(", ")+'</p></button>'}
+function nav(){var v=[["home","home"],["catalog","catalog"],["fav","fav"],["profile","profile"]];
+$("#nav").innerHTML=v.map(function(x){return '<button data-act="go" data-v="'+x[0]+'"'+(S.view===x[0]?' aria-current="true"':'')+'>'+(x[0]==="profile"?AV[S.av]+" ":"")+t(x[1])+'</button>'}).join("");
+$("#foot").textContent=t("legal")}
+function avgOf(id){return S.rate[id]||0}
+function filtered(favOnly){var q=S.q.trim().toLowerCase();
+var l=all().filter(function(a){if(favOnly&&S.favs.indexOf(a.id)<0)return false;if(S.genre!=="all"&&a.g.indexOf(S.genre)<0)return false;return !q||a.t.join(" ").toLowerCase().indexOf(q)>=0});
+l.sort(function(a,b){return S.sort==="name"?ti(a).localeCompare(ti(b)):S.sort==="rate"?avgOf(b.id)-avgOf(a.id):b.id-a.id});return l}
+function tools(){var gs=["all"].concat(Object.keys(G.uz));
+return '<div class="row"><input type="search" id="q" placeholder="'+esc(t("search"))+'" value="'+esc(S.q)+'" style="max-width:300px"><label style="display:flex;align-items:center;gap:6px">'+t("sort")+'<select id="sort">'+[["new","sNew"],["name","sName"],["rate","sRate"]].map(function(x){return '<option value="'+x[0]+'"'+(S.sort===x[0]?" selected":"")+'>'+t(x[1])+'</option>'}).join("")+'</select></label>'+'<button class="p" data-act="add">+ '+t("add")+'</button>'+'</div><div class="chips">'+gs.map(function(g){return '<button data-act="genre" data-g="'+g+'" aria-pressed="'+(S.genre===g)+'">'+(g==="all"?t("all"):gn(g))+'</button>'}).join("")+'</div>'}
+function gridOf(l,em){return l.length?'<div class="grid">'+l.map(card).join("")+'</div>':'<div class="empty">'+t(em||"none")+'</div>'}
+function pHome(){var h=SEED[(new Date().getDate())%SEED.length],c=S.hist.map(function(x){return find(x.id)}).filter(Boolean).slice(0,6),s='';
+s+='<div class="hero" style="background:linear-gradient(135deg,'+h.c[0]+','+h.c[1]+')"><small>'+t("hero")+'</small><h2>'+esc(ti(h))+'</h2><p>'+esc(ds(h))+'</p><div><button class="p" data-act="open" data-id="'+h.id+'">▶ '+t("watch")+'</button></div></div>';
+if(c.length)s+='<h2>'+t("cont")+'</h2><div class="grid">'+c.map(card).join("")+'</div>';
+return s+'<h2>'+t("news")+'</h2>'+gridOf(all().slice().sort(function(a,b){return b.id-a.id}).slice(0,6))}
+function pProfile(){var w=0,k;for(k in S.seen)w+=S.seen[k].length;
+var h=S.hist.slice(0,8).map(function(x){var a=find(x.id);return a?'<button class="card" data-act="open" data-id="'+a.id+'" data-ep="'+x.ep+'" style="text-align:left;padding:6px 0"><b>'+esc(ti(a))+'</b> <small style="color:var(--mute)">'+x.ep+'-'+t("eps")+'</small></button>':''}).join("")||'<div class="empty">'+t("histEmpty")+'</div>';
+return '<div class="box"><div class="row"><div class="av">'+AV[S.av]+'</div><div><h2>'+esc(S.name||t("guest"))+'</h2></div></div>'+
+'<label>'+t("name")+'<input type="text" id="nm" value="'+esc(S.name)+'" maxlength="30"></label>'+
+'<div class="row">'+t("avatar")+': '+AV.map(function(a,i){return '<button data-act="av" data-i="'+i+'" aria-pressed="'+(S.av===i)+'">'+a+'</button>'}).join("")+'</div>'+
+'<div><button class="p" data-act="saveprof">'+t("save")+'</button> <span id="ok" role="status"></span></div></div>'+
+'<div class="box"><h2>'+t("stats")+'</h2><div class="stats"><div><b>'+w+'</b><span>'+t("watched")+'</span></div><div><b>'+S.favs.length+'</b><span>'+t("fav")+'</span></div><div><b>'+w*24+'</b><span>'+t("mins")+'</span></div></div></div>'+
+'<div class="box"><h2>'+t("lang")+' / '+t("theme")+'</h2><div class="row">'+["uz","ru","en"].map(function(l){return '<button data-act="lang" data-l="'+l+'" aria-pressed="'+(S.lang===l)+'">'+{uz:"Oʻzbekcha",ru:"Русский",en:"English"}[l]+'</button>'}).join("")+'</div><div class="row">'+["auto","light","dark"].map(function(x){return '<button data-act="theme" data-x="'+x+'" aria-pressed="'+(S.theme===x)+'">'+t(x)+'</button>'}).join("")+'</div></div>'+
+'<div class="box"><h2>'+t("hist")+'</h2>'+h+'</div><div><button data-act="reset">'+t("reset")+'</button></div>'}
+function render(){theme();nav();var v=S.view,h;
+if(v==="home")h=pHome();else if(v==="catalog")h=tools()+gridOf(filtered(false));else if(v==="fav")h=tools()+gridOf(filtered(true),"favEmpty");else h=pProfile();
+var f=document.activeElement&&document.activeElement.id==="q";$("#page").innerHTML=h;if(f){var q=$("#q");q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+function openAnime(id,ep){var a=find(id);if(!a)return;ep=ep||1;
+if(!S.seen[id])S.seen[id]=[];if(S.seen[id].indexOf(ep)<0)S.seen[id].push(ep);
+S.hist=[{id:id,ep:ep}].concat(S.hist.filter(function(x){return x.id!==id})).slice(0,30);save();
+var fav=S.favs.indexOf(id)>=0,r=S.rate[id]||0,e="",i,cs=(S.cmt[id]||[]).slice().reverse();
+for(i=1;i<=a.n;i++)e+='<button data-act="ep" data-ep="'+i+'"'+(i===ep?' aria-current="true"':'')+'>'+i+(S.seen[id].indexOf(i)>=0&&i!==ep?' ✓':'')+'</button> ';
+var rf=(a.vid||{})[ep],p=rf?'<video controls playsinline src="'+esc(/^https?:/.test(rf)?rf:"/_blob/"+rf)+'"></video>':'<div>'+t(ADM?"noVideo":"soon")+'</div>',st="";
+for(i=1;i<=5;i++)st+='<button class="star'+(i<=r?' on':'')+'" data-act="star" data-n="'+i+'" aria-label="'+i+'/5">★</button>';
+$("#vb").dataset.id=id;$("#vb").dataset.ep=ep;
+$("#vb").innerHTML='<div class="row" style="justify-content:space-between"><h2>'+esc(ti(a))+'</h2><button data-act="close">'+t("close")+'</button></div><div class="player">'+p+'</div><div><b>'+ep+'-'+t("eps")+'</b> · '+a.y+' · '+a.g.map(gn).map(esc).join(", ")+'</div><p style="margin:0">'+esc(ds(a))+'</p><div>'+e+'</div><div class="row">'+
+'<button data-act="fav"'+(fav?' class="p"':'')+'>'+(fav?t("favDel"):t("favAdd"))+'</button>'+(a.id>1000?'<button data-act="lnk">'+t("lnk")+'</button><button data-act="del">'+t("del")+'</button>':'')+'<span>'+t("rate")+': '+st+'</span></div>'+
+'<h2>'+t("cm")+'</h2><div class="row"><input type="text" id="ci" placeholder="'+esc(t("cPh"))+'" maxlength="300" style="flex:1"><button class="p" data-act="cmt">'+t("send")+'</button></div>'+
+(cs.length?cs.map(function(c){return '<div class="cm"><b>'+esc(c.u)+'</b> <small>'+esc(c.d)+'</small><div>'+esc(c.m)+'</div></div>'}).join(""):'<div class="empty">'+t("noC")+'</div>');
+if(!$("#view").open)$("#view").showModal();render()}
+$("#page").addEventListener("input",function(e){if(e.target.id==="q"){S.q=e.target.value;render()}});
+$("#page").addEventListener("change",function(e){if(e.target.id==="sort"){S.sort=e.target.value;render()}});
+document.addEventListener("click",function(e){var b=e.target.closest("[data-act]");if(!b)return;var a=b.dataset.act,d=b.dataset,V=$("#vb").dataset;
+if(a==="go"){S.view=d.v;save();render()}
+else if(a==="genre"){S.genre=d.g;render()}
+else if(a==="open")openAnime(+d.id,+d.ep||1);
+else if(a==="close")$("#view").close();
+else if(a==="ep")openAnime(+V.id,+d.ep);
+else if(a==="fav"){var id=+V.id,i=S.favs.indexOf(id);if(i>=0)S.favs.splice(i,1);else S.favs.push(id);save();openAnime(id,+V.ep)}
+else if(a==="star"){S.rate[V.id]=+d.n;save();openAnime(+V.id,+V.ep)}
+else if(a==="cmt"){var m=$("#ci").value.trim();if(m){(S.cmt[V.id]=S.cmt[V.id]||[]).push({u:S.name||t("guest"),m:m,d:new Date().toLocaleDateString(S.lang)});save();openAnime(+V.id,+V.ep)}}
+else if(a==="del"){var x=+V.id;S.custom=(S.custom||[]).filter(function(z){return z.id!==x});CAT=CAT.filter(function(z){return z.id!==x});S.favs=S.favs.filter(function(z){return z!==x});S.hist=S.hist.filter(function(z){return z.id!==x});save();$("#view").close();render()}
+else if(a==="add"){addForm();$("#add").showModal()}
+else if(a==="addx")$("#add").close();
+else if(a==="av"){S.av=+d.i;save();render()}
+else if(a==="saveprof"){S.name=$("#nm").value.trim();save();render();$("#ok").textContent=t("saved")}
+else if(a==="lang"){S.lang=d.l;save();render()}
+else if(a==="theme"){S.theme=d.x;save();render()}
+else if(a==="lnk"){var u=prompt(t("lnk")+" — to‘g‘ridan-to‘g‘ri MP4/WebM/HLS havolasi", "https://");if(u&&/^https?:\/\//i.test(u)){var an=(S.custom||[]).filter(function(z){return z.id===+V.id})[0]||CAT.filter(function(z){return z.id===+V.id})[0];if(an){an.vid=an.vid||{};an.vid[+V.ep]=u;save();openAnime(+V.id,+V.ep)}}}
+else if(a==="reset"){if(confirm(t("confirm"))){try{localStorage.removeItem("tm2")}catch(er){}location.reload()}}});
+function addForm(){$("#af").innerHTML='<h2>'+t("add")+'</h2><label>'+t("name")+'<input type="text" name="title" required></label><label>'+t("genres")+'<input type="text" name="genres"></label><label>'+t("year")+'<input type="number" name="year" value="2026" min="1960" max="2100"></label><label>'+t("eps")+'<input type="number" name="eps" value="12" min="1" max="500"></label><label>'+t("desc")+'<textarea name="desc" rows="3"></textarea></label><label>'+t("video")+'<input type="url" name="video" placeholder="https://..."></label><div class="row" style="justify-content:flex-end"><button type="button" data-act="addx">'+t("cancel")+'</button><button class="p" type="submit">'+t("save")+'</button></div>'}
+$("#af").addEventListener("submit",function(){var f=new FormData(this),n=String(f.get("title")).trim();if(!n)return;var h=Math.floor(Math.random()*360),ds=String(f.get("desc")),
+gs=String(f.get("genres")).split(",").map(function(s){return s.trim()}).filter(Boolean).slice(0,4);
+var vu=String(f.get("video")).trim();S.custom=S.custom||[];S.custom.push({id:Date.now(),vid:vu?{1:vu}:{},t:[n,n,n],g:gs,y:+f.get("year")||2026,n:Math.max(1,+f.get("eps")||1),d:[ds,ds,ds],c:["hsl("+h+",80%,55%)","hsl("+((h+60)%360)+",60%,22%)"],k:n.charAt(0).toUpperCase()});save();$("#add").close();S.view="catalog";render()});
+render();
+</script>
+</body>
+</html>
